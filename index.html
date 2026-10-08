@@ -1712,45 +1712,62 @@ function makeOEEImg(src, onclick) {
   return img;
 }
 function populateOEEImages() {
-  var heroImg = document.getElementById('shHeroImg');
-  if (heroImg && IMAGES['oee_rt_dash']) heroImg.src = IMAGES['oee_rt_dash'];
-  var pwaEl = document.getElementById('shPwaImg');
+  var heroImg = document.getElementById('hero-img');
+  if (heroImg && IMAGES['oee_rt_dash']) {
+    var img = document.createElement('img');
+    img.src = IMAGES['oee_rt_dash'];
+    img.style.cssText = 'width:100%;display:block;cursor:zoom-in;';
+    img.onclick = function(){ openOEELB(IMAGES['oee_rt_dash']); };
+    heroImg.appendChild(img);
+  }
+  var pwaEl = document.getElementById('pwa-imgs');
   if (pwaEl && IMAGES['oee_pwa_home']) {
     var pImg = document.createElement('img');
     pImg.src = IMAGES['oee_pwa_home'];
     pImg.style.cssText = 'height:150px;width:auto;border-radius:10px;border:1px solid #dbeafe;cursor:zoom-in;';
-    pImg.onclick = function() { openOEELB(IMAGES['oee_pwa_home']); };
+    pImg.onclick = function(){ openOEELB(IMAGES['oee_pwa_home']); };
     pwaEl.appendChild(pImg);
   }
-  var singles = {shVisLogin:'oee_login2', shVisRt:'oee_rt_dash'};
-  for (var id in singles) {
-    var el = document.getElementById(id);
-    var key = singles[id];
-    if (el && IMAGES[key]) el.appendChild(makeOEEImg(IMAGES[key]));
-  }
-  var pairs = {shVisInput:['oee_input_rt','oee_input_prod'], shVisIssue:['oee_issue_form','oee_issue_list']};
-  for (var pid in pairs) {
-    var pel = document.getElementById(pid);
-    if (!pel) continue;
-    pel.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;align-items:start;';
-    pairs[pid].forEach(function(k) {
-      if (IMAGES[k]) {
-        var img = document.createElement('img');
-        img.src = IMAGES[k];
-        img.style.cssText = 'width:100%;display:block;border-radius:10px;border:1px solid #dbeafe;cursor:zoom-in;';
-        img.onclick = (function(s){ return function(){ openOEELB(s); }; })(IMAGES[k]);
-        pel.appendChild(img);
-      }
-    });
-  }
-  var stacks = {shVisOee:['oee_oee2','oee_oee3'], shVisAi:['oee_ai','oee_ai_issue']};
-  for (var sid in stacks) {
-    var sel = document.getElementById(sid);
-    if (!sel) continue;
-    stacks[sid].forEach(function(k) {
-      if (IMAGES[k]) sel.appendChild(makeOEEImg(IMAGES[k]));
-    });
-  }
+  addSingle('vis-login', 'oee_login2');
+  addSingle('vis-rt', 'oee_rt_dash');
+  addPairEl('vis-input', ['oee_input_rt','oee_input_prod']);
+  addStackEl('vis-oee', ['oee_oee2','oee_oee3']);
+  addPairEl('vis-issue', ['oee_issue_form','oee_issue_list']);
+  addStackEl('vis-ai', ['oee_ai','oee_ai_issue']);
+}
+function addSingle(id, key) {
+  var el = document.getElementById(id);
+  if (!el || !IMAGES[key]) return;
+  var img = document.createElement('img');
+  img.src = IMAGES[key];
+  img.style.cssText = 'width:100%;display:block;border-radius:10px;border:1px solid #dbeafe;cursor:zoom-in;box-shadow:0 4px 16px rgba(29,78,216,0.07);';
+  img.onclick = (function(s){ return function(){ openOEELB(s); }; })(IMAGES[key]);
+  el.appendChild(img);
+}
+function addPairEl(id, keys) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;align-items:start;';
+  keys.forEach(function(k){
+    if (!IMAGES[k]) return;
+    var img = document.createElement('img');
+    img.src = IMAGES[k];
+    img.style.cssText = 'width:100%;display:block;border-radius:10px;border:1px solid #dbeafe;cursor:zoom-in;box-shadow:0 4px 16px rgba(29,78,216,0.07);';
+    img.onclick = (function(s){ return function(){ openOEELB(s); }; })(IMAGES[k]);
+    el.appendChild(img);
+  });
+}
+function addStackEl(id, keys) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  keys.forEach(function(k){
+    if (!IMAGES[k]) return;
+    var img = document.createElement('img');
+    img.src = IMAGES[k];
+    img.style.cssText = 'width:100%;display:block;border-radius:10px;border:1px solid #dbeafe;cursor:zoom-in;box-shadow:0 4px 16px rgba(29,78,216,0.07);margin-bottom:0.75rem;';
+    img.onclick = (function(s){ return function(){ openOEELB(s); }; })(IMAGES[k]);
+    el.appendChild(img);
+  });
 }
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') { closeOEELB(); closeOEEShowcase(); }
